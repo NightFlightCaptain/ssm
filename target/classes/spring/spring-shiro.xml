@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!--登陆页面-->
+        <property name="loginUrl" value="/login"/>
+        <!--&lt;!&ndash;认证成功统一跳转到first.actio，建议不配置，不配置的话shiro认证成功会自动到上一个请求路径&ndash;&gt;-->
+        <!--<property name="successUrl" value="/first.action"/>-->
+        <!--<property name="unauthorizedUrl" value="/refuse.jsp" />-->
+        <!-- 过虑器链定义，从上向下顺序执行，一般将/**放在最下边 -->
+        <property name="filterChainDefinitions">
+            <value>
+                <!--对静态资源设置匿名访问-->
+                /images/**=anon
+                /js/**=anon
+                /style/**=anon
+                <!--swagger相关配置不拦截-->
+                /swagger-ui.html=anon
+                /swagger-resources=anon
+                /v2/api-docs=anon
+                /webjars/** = anon
+                /swagger/**=anon
+                /configuration/**=anon
+                <!--druid连接池不拦截-->
+                /druid = anon
+                <!--/**=anon 表示所有的url都可以匿名访问，anon是shiro中一个过滤器的简写,authc表示拦截-->
+                /logout = logout
+                /**=authc
+            </value>
+        </property>
+    </bean>
+    <!--securityManage-->
+    <!-- 安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="userRealm"/>
+    </bean>
+    <!--自定义realm-->
+    <bean id="userRealm" class="auth.UserRealm"/>
+
+    <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+
+</beans>

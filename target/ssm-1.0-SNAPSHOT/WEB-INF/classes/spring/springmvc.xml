@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--配置Spring MVC-->
+    <!--1：开启Spring MVC注解模式-->
+    <!--简化配置：
+        (1)主动注册DefaultAnnotationHandlerMapping,AnnotationMethodHandlerAdapter
+        (2)提供一系列：数据绑定，数字和日期format @NumberFormat,@DataTimeFormat,xml,json默认读写支持
+    -->
+
+    <mvc:annotation-driven/>
+    <!-- 支持Controller的AOP代理 -->
+    <!--servlet-mapping 映射路径:"/"-->
+    <!--2:静态资源默认servlet配置
+        1.加入对静态资源的处理
+        2.允许使用"/"做整体映射
+    -->
+    <mvc:default-servlet-handler/>
+    <!--3:配置jsp 显示ViewResolver-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/jsp"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!--扫描相关的bean，如果使用了AOP，那么Controller不一定全在controller包下-->
+    <context:component-scan base-package="controller,common.exception" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <!--控制器增强，通常用来解决全局异常-->
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+
+    <!--装配Swagger配置-->
+    <bean class="common.SwaggerConfig"/>
+
+    <!--shiro的这个注解配置一定要放在SpringMVC中-->
+    <aop:config proxy-target-class="true"/>
+
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+        <property name="proxyTargetClass" value="true" />
+    </bean>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+</beans>

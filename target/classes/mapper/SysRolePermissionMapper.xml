@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.SysRolePermissionMapper">
+  <resultMap id="BaseResultMap" type="model.SysRolePermission">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="sys_role_id" jdbcType="INTEGER" property="sysRoleId" />
+    <result column="sys_permission_id" jdbcType="INTEGER" property="sysPermissionId" />
+  </resultMap>
+
+</mapper>

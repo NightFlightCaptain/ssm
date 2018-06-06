@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.SysPermissionMapper" >
+  <resultMap id="BaseResultMap" type="model.SysPermission" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="common" property="common" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="order_number" property="orderNumber" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="getPermissionsByRoleId" resultMap="BaseResultMap" parameterType="INTEGER">
+    SELECT sys_permission.id,
+    sys_permission.create_time,
+    sys_permission.common,
+    sys_permission.name,
+    sys_permission.order_number,
+    sys_permission.parent_id,
+    sys_permission.type,
+    sys_permission.update_time,
+    sys_permission.url,
+    sys_permission.value
+     FROM sys_permission,sys_role_permission,sys_role
+    WHERE sys_role_id = #{roleId}
+    AND sys_permission.id = sys_role_permission.sys_permission_id
+    AND sys_role.id = sys_role_permission.sys_role_id
+  </select>
+  <select id="getPermissionsByUserAccount" resultMap="BaseResultMap" parameterType="STRING">
+    SELECT sys_permission.id,
+    sys_permission.create_time,
+    sys_permission.common,
+    sys_permission.name,
+    sys_permission.order_number,
+    sys_permission.parent_id,
+    sys_permission.type,
+    sys_permission.update_time,
+    sys_permission.url,
+    sys_permission.value
+     FROM sys_permission,sys_role_permission,sys_role,sys_user
+    WHERE sys_user.account = #{account}
+    AND sys_role_id = sys_user.role_id
+    AND sys_role.id = sys_role_permission.sys_role_id
+    AND sys_permission.id = sys_role_permission.sys_permission_id
+  </select>
+  <select id="getRoleByUserAccount" resultType="java.lang.Integer" parameterType="STRING">
+    SELECT sys_user.role_id FROM sys_user WHERE account = #{account}
+  </select>
+</mapper>
