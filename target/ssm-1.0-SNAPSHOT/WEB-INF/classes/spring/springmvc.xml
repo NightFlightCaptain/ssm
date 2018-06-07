@@ -9,14 +9,13 @@
                         http://www.springframework.org/schema/context/spring-context.xsd
                         http://www.springframework.org/schema/mvc
                         http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-
+    <!--###############################SpringMVC配置-START###############################-->
     <!--配置Spring MVC-->
     <!--1：开启Spring MVC注解模式-->
     <!--简化配置：
         (1)主动注册DefaultAnnotationHandlerMapping,AnnotationMethodHandlerAdapter
         (2)提供一系列：数据绑定，数字和日期format @NumberFormat,@DataTimeFormat,xml,json默认读写支持
     -->
-
     <mvc:annotation-driven/>
     <!-- 支持Controller的AOP代理 -->
     <!--servlet-mapping 映射路径:"/"-->
@@ -27,6 +26,7 @@
     <mvc:default-servlet-handler/>
     <!--3:配置jsp 显示ViewResolver-->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
         <property name="prefix" value="/WEB-INF/jsp"/>
         <property name="suffix" value=".jsp"/>
@@ -37,17 +37,28 @@
         <!--控制器增强，通常用来解决全局异常-->
         <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
     </context:component-scan>
+    <!--###############################SpringMVC配置-END###############################-->
 
+
+
+    <!--###############################Swagger2配置-SRART###############################-->
     <!--装配Swagger配置-->
     <bean class="common.SwaggerConfig"/>
+    <!--###############################Swagger2配置-END###############################-->
 
+
+
+    <!--###############################Shiro相关配置-START###############################-->
     <!--shiro的这个注解配置一定要放在SpringMVC中-->
     <aop:config proxy-target-class="true"/>
 
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
         <property name="proxyTargetClass" value="true" />
     </bean>
+    <!--shiro注解支持-->
     <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"/>
     </bean>
+    <!--###############################Shiro相关配置-END###############################-->
+
 </beans>

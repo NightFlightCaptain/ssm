@@ -1,7 +1,11 @@
 package common.exception;
 
+import auth.UserRealm;
 import model.Msg;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionAdvice {
 
+	private static final Logger LOGGER = LogManager.getLogger(UserRealm.class);
 	/**
 	 * 信息无法读取
 	 * @param e
@@ -30,6 +35,7 @@ public class ExceptionAdvice {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Msg handleHttpMessageNotReadableException(Exception e){
 		e.printStackTrace();
+
 		return Msg.message(400,"无法读取");
 	}
 
@@ -74,8 +80,17 @@ public class ExceptionAdvice {
 	@ExceptionHandler(AuthenticationException.class)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public Msg handleAuthenticationException(AuthenticationException e){
+		LOGGER.error(e);
 		return Msg.message(401,"登陆错误");
 	}
+
+	@ExceptionHandler(UnknownAccountException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public Msg handleUnknownAccountException(UnknownAccountException e){
+		LOGGER.error(e);
+		return Msg.message(401,"请登录");
+	}
+
 
 	/**
 	 * 没有权限——shiro

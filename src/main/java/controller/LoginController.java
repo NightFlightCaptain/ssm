@@ -23,7 +23,7 @@ public class LoginController {
 	public Msg login(HttpServletRequest request,
 	                 @ApiParam(defaultValue = "wan2")@RequestParam("account") String account,
 	                 @ApiParam(defaultValue = "123")@RequestParam("password") String password) throws Exception {
-		String exceptionClassName = (String) request.getAttribute("shiroLoginFailure");
+//		String exceptionClassName = (String) request.getAttribute("shiroLoginFailure");
 		Subject subject = SecurityUtils.getSubject();
 		System.out.println("喵喵喵");
 		UsernamePasswordToken token = new UsernamePasswordToken(account, password);
@@ -42,5 +42,14 @@ public class LoginController {
 //				throw new Exception();//最终在异常处理器生成未知错误
 //			}
 //		}
+	}
+
+	@GetMapping("/logout")
+	public Msg logout(){
+		Subject subject = SecurityUtils.getSubject();
+		if (subject.isAuthenticated()) {
+			subject.logout();
+		}
+		return Msg.success("成功退出");
 	}
 }

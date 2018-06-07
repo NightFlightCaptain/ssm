@@ -4,12 +4,14 @@ import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 如果有构造器，一定要写一个无参的构造器
+ * SysUser作为Session储存对象需要实现序列化接口
  */
-public class SysUser {
+public class SysUser implements Serializable{
 	public SysUser( String account, String password, String nickname, Integer roleId, Boolean status, Date createTime) {
 		this.account = account;
 		this.password = password;

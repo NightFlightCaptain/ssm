@@ -28,8 +28,8 @@
                 /configuration/**=anon
                 <!--druid连接池不拦截-->
                 /druid = anon
-                <!--/**=anon 表示所有的url都可以匿名访问，anon是shiro中一个过滤器的简写,authc表示拦截-->
                 /logout = logout
+                <!--/**=anon 表示所有的url都可以匿名访问，anon是shiro中一个过滤器的简写,authc表示拦截-->
                 /**=authc
             </value>
         </property>
@@ -38,9 +38,52 @@
     <!-- 安全管理器 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="userRealm"/>
+        <property name="cacheManager" ref="redisCacheManager"/>
+        <property name="sessionManager" ref="redisSessionManager"/>
     </bean>
     <!--自定义realm-->
     <bean id="userRealm" class="auth.UserRealm"/>
+    <!--自定义RedisCacheManager-->
+    <bean id="redisCacheManager" class="auth.RedisCacheManager"/>
+    <!--redis来管理session-->
+    <bean id="redisSessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="sessionDAO" ref="redisSessionDAO"/>
+        <property name="sessionIdCookie" ref="shareSession"/>
+        <property name="sessionIdUrlRewritingEnabled" value="false"/>
+        <!--删除失效session-->
+        <property name="deleteInvalidSessions" value="true"/>
+        <!--超时ms-->
+        <property name="globalSessionTimeout" value="1800000"/>
+        <!-- 定时检查失效的session -->
+        <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <!--隔多久检查一次失效的session-->
+        <property name="sessionValidationInterval" value="900000"/>
+    </bean>
+
+    <!--自定义redisSessionDAO-->
+    <bean id="redisSessionDAO" class="auth.RedisSessionDao">
+        <constructor-arg ref="redisTemplate"/>
+        <property name="sessionIdGenerator">
+            <bean class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator"/>
+        </property>
+    </bean>
+    <!--sessionIdCookie的实现，用于重写覆盖容器默认的JSESSIONID-->
+    <bean id="shareSession" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg name="name" value="SHAREJSESSIONID"/>
+        <property name="path" value="/"/>
+        <!-- 浏览器关闭session失效，不计入cookie -->
+        <property name="maxAge" value="-1"/>
+    </bean>
+
+
+    <!--&lt;!&ndash; session 保存到cookie，关闭浏览器下次可以直接登录认证，当maxAge为-1不会写cookie。&ndash;&gt;-->
+    <!--<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">-->
+        <!--<constructor-arg value="sid"/>-->
+        <!--<property name="httpOnly" value="true"/>-->
+        <!--&lt;!&ndash; 浏览器关闭session失效，不计入cookie &ndash;&gt;-->
+        <!--<property name="maxAge" value="-1"/>-->
+    <!--</bean>-->
+    <!---->
 
     <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>

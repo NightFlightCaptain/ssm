@@ -2,6 +2,7 @@ package auth;
 
 import model.SysPermission;
 import model.SysUser;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -16,6 +17,7 @@ import service.SysUserService;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Copyright(C) 2018-2018
@@ -51,15 +53,15 @@ public class UserRealm extends AuthorizingRealm {
 		}
 		System.out.println(sysUser.toString());
 		SimpleAuthenticationInfo simpleAuthenticationInfo =
-				new SimpleAuthenticationInfo(account, sysUser.getPassword(), this.getName());
+				new SimpleAuthenticationInfo(sysUser, sysUser.getPassword(), this.getName());
 		return simpleAuthenticationInfo;
 	}
 
 	//	用于授权
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		String account =  principals.getPrimaryPrincipal().toString();
-		List<SysPermission> sysPermissions = sysPermissionService.getPermissionsByUserAccount(account);
+		SysUser sysUser =  (SysUser)principals.getPrimaryPrincipal();
+		List<SysPermission> sysPermissions = sysPermissionService.getPermissionsByUserAccount(sysUser.getAccount());
 		List<String> permissionValus = new ArrayList<String>();
 		if (sysPermissions != null) {
 			System.out.println(sysPermissions.size());
@@ -72,5 +74,11 @@ public class UserRealm extends AuthorizingRealm {
 				= new SimpleAuthorizationInfo();
 		simpleAuthorizationInfo.addStringPermissions(permissionValus);
 		return simpleAuthorizationInfo;
+	}
+
+	//清除缓存
+	public void clearCached() {
+		PrincipalCollection principals = SecurityUtils.getSubject().getPrincipals();
+		super.clearCache(principals);
 	}
 }

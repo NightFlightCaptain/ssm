@@ -30,7 +30,6 @@
         <property name="typeAliasesPackage" value="model"/>
         <!--扫描sql配置文件：mapper需要的xml文件-->
         <!--如果放在类路径下，将映射失败java.lang.IllegalArgumentException: Mapped Statements collection does not contain value for cn.seckill.dao.RepertoryDao.queryById-->
-        <!--<property name="mapperLocations" value="classpath*:cn/seckill/mapper/**/*.xml"/>-->
         <property name="mapperLocations" value="classpath*:mapper/*.xml"/>
     </bean>
 
