@@ -35,7 +35,6 @@ public class ExceptionAdvice {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Msg handleHttpMessageNotReadableException(Exception e){
 		e.printStackTrace();
-
 		return Msg.message(400,"无法读取");
 	}
 
