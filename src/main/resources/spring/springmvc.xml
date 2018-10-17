@@ -22,6 +22,9 @@
     <!--2:静态资源默认servlet配置
         1.加入对静态资源的处理
         2.允许使用"/"做整体映射
+        servlet在查找资源时，会按照DispatcherServlet路线进行查找，找不到就会404。但是在加上这个默认的servlet之后，找不到就会去查找静态内容。
+       相应的还有<mvc:resource>这样的注解
+       如果在web.xml中的配置不是"/"而是"get*.action”这样的话就不会出现找不到，如果是使用"/"就会出现上述结果
     -->
     <mvc:default-servlet-handler/>
     <!--3:配置jsp 显示ViewResolver-->
@@ -31,7 +34,9 @@
         <property name="prefix" value="/WEB-INF/jsp"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-    <!--扫描相关的bean，如果使用了AOP，那么Controller不一定全在controller包下-->
+    <!--扫描相关的bean，如果使用了AOP，那么Controller不一定全在controller包下
+       use-default-filters表示是否默认加载@Component，@Repository，@Service，@Controller这些注解
+-->
     <context:component-scan base-package="controller,common.exception" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <!--控制器增强，通常用来解决全局异常-->
