@@ -13,6 +13,7 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="order_number" property="orderNumber" jdbcType="INTEGER" />
   </resultMap>
+
   <select id="getPermissionsByRoleId" resultMap="BaseResultMap" parameterType="INTEGER">
     SELECT sys_permission.id,
     sys_permission.create_time,
@@ -29,6 +30,7 @@
     AND sys_permission.id = sys_role_permission.sys_permission_id
     AND sys_role.id = sys_role_permission.sys_role_id
   </select>
+
   <select id="getPermissionsByUserAccount" resultMap="BaseResultMap" parameterType="STRING">
     SELECT sys_permission.id,
     sys_permission.create_time,

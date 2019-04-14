@@ -64,10 +64,10 @@ public class UserRealm extends AuthorizingRealm {
 		List<SysPermission> sysPermissions = sysPermissionService.getPermissionsByUserAccount(sysUser.getAccount());
 		List<String> permissionValus = new ArrayList<String>();
 		if (sysPermissions != null) {
-			System.out.println(sysPermissions.size());
+//			System.out.println(sysPermissions.size());
 			for (SysPermission sysPermission : sysPermissions) {
 				permissionValus.add(sysPermission.getValue());
-				System.out.println(sysPermission.toString());
+//				System.out.println(sysPermission.toString());
 			}
 		}
 		SimpleAuthorizationInfo simpleAuthorizationInfo
