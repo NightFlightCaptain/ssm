@@ -367,6 +367,9 @@ public class SwaggerConfig {
 <beanclass="common.SwaggerConfig"/>
 具体的swagger注解如何使用可以参考：[注解的使用说明](https://my.oschina.net/zzuqiang/blog/793606)
 
+![swagger页面](https://github.com/xhwanhaoran/ssm/blob/master/swagger2.jpg?raw=true)
+
+
 ## 8、shiro的集成
 ### 关于shiro ###
 shiro是目前流程轻便的安全框架，用来解决登陆认证和权限管理等问题，具体的解释小伙伴们可以自行google，就不对shiro的含义展开详细论述了
